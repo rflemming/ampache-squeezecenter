@@ -1,0 +1,38 @@
+PLUGIN_AMPACHE
+	EN	Ampache
+
+PLUGIN_AMPACHE_DESC
+	EN	Connected to a remote Ampache server
+
+SETUP_PLUGIN_AMPACHE_SERVER
+	EN	Ampache Server
+
+SETUP_PLUGIN_AMPACHE_SERVER_DESC
+	EN	Full URL containing xml.server.php (ex: http://host.com/server/xml.server.php)
+
+SETUP_PLUGIN_AMPACHE_USERNAME
+	EN	Username
+
+SETUP_PLUGIN_AMPACHE_USERNAME_DESC
+	EN	Ampache username
+
+SETUP_PLUGIN_AMPACHE_USERNAME_OPTIONAL_DESC
+	EN	Ampache username (Optional)
+
+SETUP_PLUGIN_AMPACHE_KEY
+	EN	Remote Key
+
+SETUP_PLUGIN_AMPACHE_KEY_DESC
+	EN	Key string for accessing XML API
+
+SETUP_PLUGIN_AMPACHE_PASSWORD
+	EN	Password
+
+SETUP_PLUGIN_AMPACHE_PASSWORD_DESC
+	EN	Ampache password
+
+SETUP_PLUGIN_AMPACHE_VERSION
+	EN	Version
+
+SETUP_PLUGIN_AMPACHE_VERSION_DESC
+	EN	Version number of the Ampache server
