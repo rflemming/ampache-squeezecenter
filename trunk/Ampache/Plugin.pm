@@ -59,7 +59,7 @@ sub initPlugin {
   $ampache = authenticate();
 
   Slim::Player::ProtocolHandlers->registerIconHandler(
-      qr{/play/index\.php\?song=\d+},
+      qr{/play/index\.php\?(.+)},
       sub { return $class->_pluginDataFor('icon'); }
   );
 
@@ -71,7 +71,7 @@ sub initPlugin {
   );
 
   Slim::Formats::RemoteMetadata->registerProvider(
-    match => qr{/play/index\.php\?song=\d+},
+    match => qr{/play/index\.php\?(.+)},
     func   => \&metaProvider,
   );
 
