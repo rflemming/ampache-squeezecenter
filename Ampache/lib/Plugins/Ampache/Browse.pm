@@ -13,65 +13,14 @@ my $log = Slim::Utils::Log->addLogCategory({
   'defaultLevel' => 'DEBUG',
 });
 
-my $ampache;
-
-sub getTopLevelMenu {
-  $ampache = shift;
-
-  my @items;
-  # If there was a login error we'll catch it here, otherwise return the
-  # main menu
-  if ($ampache->error()) {
-    @items = (&Error());
-  } else {
-    @items = (
-      {
-        'name' => 'Albums',
-        'type' => 'opml',
-        'url' => \&getAlbums,
-        'passthrough' => [\&Plugins::Ampache::Ampache::getAlbums],
-      },
-      {
-        'name' => 'Artists',
-        'type' => 'opml',
-        'url' => \&getArtists,
-        'passthrough' => [\&Plugins::Ampache::Ampache::getArtists],
-      },
-      {
-        'name' => 'Genres',
-        'type' => 'opml',
-        'url' => \&getGenres,
-      },
-      {
-        'name' => 'Playlists',
-        'type' => 'opml',
-        'url' => \&getPlaylists,
-      },
-    );
-
-    if (int($ampache->{version}) >= 350001) {
-      push @items, {
-        'name' => 'Tags',
-        'type' => 'opml',
-        'url' => \&getTags,
-      };
-    }
-  }
-
-  my $feed = {
-    'title' => 'Ampache',
-    'type' => 'opml',
-    'nocache' => 1,
-    'items' => \@items,
-  };
-
-  return $feed;
-}
+# We have one function for each type of object returned.  Since there
+# are multiple ways to get an Artist, Album, or Song reference the
+# function used is passed as one of the 'passthrough' arguments.
 
 sub getAlbums {
   my $client = shift;
   my $callback = shift;
-  my ($function, $filter) = @_;
+  my ($ampache, $function, $filter) = @_;
 
   my @albums;
 
@@ -82,6 +31,7 @@ sub getAlbums {
       'url' => \&getSongs,
       'image' => $album->{art},
       'passthrough' => [
+          $ampache,
           \&Plugins::Ampache::Ampache::getSongsByAlbum, $album->{id}
       ],
     };
@@ -91,14 +41,14 @@ sub getAlbums {
     $log->debug('Found ' . ($#albums + 1) . ' album(s)');
     return $callback->(\@albums);
   } else {
-    return $callback->(&Error('No albums found'));
+    return $callback->(&Plugins::Ampache::Plugin::Error('No albums found'));
   }
 }
 
 sub getArtists {
   my $client = shift;
   my $callback = shift;
-  my ($function, $filter) = @_;
+  my ($ampache, $function, $filter) = @_;
 
   my @artists;
 
@@ -108,6 +58,7 @@ sub getArtists {
       'type' => 'opml',
       'url' => \&getAlbums,
       'passthrough' => [
+          $ampache,
           \&Plugins::Ampache::Ampache::getAlbumsByArtist, $artist->{id}
       ],
     };
@@ -117,18 +68,20 @@ sub getArtists {
     $log->debug('Found ' . ($#artists + 1) . ' artist(s)');
     return $callback->(\@artists);
   } else {
-    return $callback->(&Error('No artists found'));
+    return $callback->(&Plugins::Ampache::Plugin::Error('No artists found'));
   }
 }
 
 sub getGenres {
   my $client = shift;
   my $callback = shift;
-  my $filter = shift;
+  my ($ampache, $filter) = @_;
 
   my @genres;
 
   foreach my $genre ($ampache->getGenres($filter)) {
+    # Since there are multiple ways to browse by Genre return a
+    # sub-menu first.
     push @genres, {
         'title' => $genre->{name},
         'type' => 'opml',
@@ -138,6 +91,7 @@ sub getGenres {
             'type' => 'opml',
             'url' => \&getAlbums,
             'passthrough' => [
+                $ampache,
                 \&Plugins::Ampache::Ampache::getAlbumsByGenre, $genre->{id}
             ],
           },
@@ -146,6 +100,7 @@ sub getGenres {
             'type' => 'opml',
             'url' => \&getArtists,
             'passthrough' => [
+                $ampache,
                 \&Plugins::Ampache::Ampache::getArtistsByGenre, $genre->{id}
             ],
           },
@@ -154,6 +109,7 @@ sub getGenres {
             'type' => 'playlist',
             'url' => \&getSongs,
             'passthrough' => [
+                $ampache,
                 \&Plugins::Ampache::Ampache::getSongsByGenre, $genre->{id}
             ],
           },
@@ -165,18 +121,19 @@ sub getGenres {
     $log->debug('Found ' . ($#genres + 1) . ' genre(s)');
     return $callback->(\@genres);
   } else {
-    return $callback->(&Error('No genres found'));
+    return $callback->(&Plugins::Ampache::Plugin::Error('No genres found'));
   }
 }
 
 sub getTags {
   my $client = shift;
   my $callback = shift;
-  my $filter = shift;
+  my ($ampache, $filter) = @_;
 
   my @tags;
 
   foreach my $tag ($ampache->getTags($filter)) {
+    # Tags work the same was as Genres
     push @tags, {
         'title' => $tag->{name},
         'type' => 'opml',
@@ -186,6 +143,7 @@ sub getTags {
             'type' => 'opml',
             'url' => \&getAlbums,
             'passthrough' => [
+                $ampache,
                 \&Plugins::Ampache::Ampache::getAlbumsByTag, $tag->{id}
             ],
           },
@@ -194,6 +152,7 @@ sub getTags {
             'type' => 'opml',
             'url' => \&getArtists,
             'passthrough' => [
+                $ampache,
                 \&Plugins::Ampache::Ampache::getArtistsByTag, $tag->{id}
             ],
           },
@@ -202,6 +161,7 @@ sub getTags {
             'type' => 'playlist',
             'url' => \&getSongs,
             'passthrough' => [
+                $ampache,
                 \&Plugins::Ampache::Ampache::getSongsByTag, $tag->{id}
             ],
           },
@@ -213,14 +173,14 @@ sub getTags {
     $log->debug('Found ' . ($#tags + 1) . ' tag(s)');
     return $callback->(\@tags);
   } else {
-    return $callback->(&Error('No tags found'));
+    return $callback->(&Plugins::Ampache::Plugin::Error('No tags found'));
   }
 }
 
 sub getPlaylists {
   my $client = shift;
   my $callback = shift;
-  my $filter = shift;
+  my ($ampache, $filter) = @_;
 
   my @playlists;
 
@@ -230,6 +190,7 @@ sub getPlaylists {
       'type' => 'playlist',
       'url' => \&getSongs,
       'passthrough' => [
+          $ampache,
           \&Plugins::Ampache::Ampache::getSongsByPlaylist, $playlist->{id}
       ],
     };
@@ -239,14 +200,14 @@ sub getPlaylists {
     $log->debug('Found ' . ($#playlists + 1) . ' playlist(s)');
     return $callback->(\@playlists);
   } else {
-    return $callback->(&Error('No playlists found'));
+    return $callback->(&Plugins::Ampache::Plugin::Error('No playlists found'));
   }
 }
 
 sub getSongs {
   my $client = shift;
   my $callback = shift;
-  my ($method, $filter) = @_;
+  my ($ampache, $method, $filter) = @_;
 
   my @songs;
 
@@ -264,27 +225,8 @@ sub getSongs {
     $log->debug('Found ' . ($#songs + 1) . ' song(s)');
     return $callback->(\@songs);
   } else {
-    return $callback->(&Error('No songs found'));
+    return $callback->(&Plugins::Ampache::Plugin::Error('No songs found'));
   }
-}
-
-sub Error {
-  my $error = shift;
-
-  # First use the internal Ampache message, then the user specified one
-  # so that we can catch all errors with a single test while browsing.
-  if ($ampache->error()) {
-    my @error = $ampache->error();
-    $error = "$error[0] - $error[1]";
-  } elsif (! $error) {
-    $error = "Unknown error";
-  }
-
-  # Log the error and return it is a feed item.  Clicking it won't do
-  # much, but it's the only way to return the error
-  $log->info($error);
-
-  return {'name' => $error};
 }
 
 1;
