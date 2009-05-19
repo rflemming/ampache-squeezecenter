@@ -8,7 +8,7 @@ SETUP_PLUGIN_AMPACHE_SERVER
 	EN	Ampache Server
 
 SETUP_PLUGIN_AMPACHE_SERVER_DESC
-	EN	Full URL containing xml.server.php (ex: http://host.com/server/xml.server.php)
+	EN	URL of Ampache server (ex: http://host.com/ampache)
 
 SETUP_PLUGIN_AMPACHE_USERNAME
 	EN	Username

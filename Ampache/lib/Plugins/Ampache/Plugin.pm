@@ -53,7 +53,7 @@ sub authenticate {
   $log->debug('Authenticating...');
   my $ampache = Ampache->new();
   $ampache->connect(
-    $prefs->get('plugin_ampache_server'),
+    $prefs->get('plugin_ampache_server') . '/server/xml.server.php',
     $key,
     $prefs->get('plugin_ampache_username'),
     $version,
