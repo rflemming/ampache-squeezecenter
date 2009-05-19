@@ -1,15 +1,27 @@
 package Plugins::Ampache::Plugin;
 
-use strict;
+# Copyright 2009 Robert Flemming (flemming@spiralout.net)
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License,
+# version 2.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
 
-use Slim::Utils::Prefs;
-use Slim::Utils::Log;
-use Slim::Utils::Strings qw(string);
+use strict;
+use warnings;
 
 use Slim::Formats::RemoteMetadata;
 use Slim::Formats::XML;
 
-use Plugins::Ampache::Ampache;
+use Slim::Utils::Log;
+use Slim::Utils::Prefs;
+use Slim::Utils::Strings qw(string);
+
+use Ampache::Ampache;
 use Plugins::Ampache::Browse;
 use Plugins::Ampache::Settings;
 
@@ -19,7 +31,7 @@ my $prefs = preferences('plugin.ampache');
 
 my $log = Slim::Utils::Log->addLogCategory({
   'category'     => 'plugin.ampache',
-  'defaultLevel' => 'DEBUG',
+  'defaultLevel' => 'INFO',
 });
 
 # Store an Ampache::Ampache instance for easy access
@@ -39,7 +51,7 @@ sub authenticate {
   }
 
   $log->debug('Authenticating...');
-  my $ampache = Plugins::Ampache::Ampache->new();
+  my $ampache = Ampache->new();
   $ampache->connect(
     $prefs->get('plugin_ampache_server'),
     $key,
@@ -117,19 +129,19 @@ sub feed {
     # server.
     @items = (
       {
-        'name' => 'Albums',
+        'name' => string('ALBUMS'),
         'type' => 'opml',
         'url' => \&Plugins::Ampache::Browse::getAlbums,
-        'passthrough' => [$ampache, \&Plugins::Ampache::Ampache::getAlbums],
+        'passthrough' => [$ampache, \&Ampache::getAlbums],
       },
       {
-        'name' => 'Artists',
+        'name' => string('ARTISTS'),
         'type' => 'opml',
         'url' => \&Plugins::Ampache::Browse::getArtists,
-        'passthrough' => [$ampache, \&Plugins::Ampache::Ampache::getArtists],
+        'passthrough' => [$ampache, \&Ampache::getArtists],
       },
       {
-        'name' => 'Playlists',
+        'name' => string('PLAYLISTS'),
         'type' => 'opml',
         'url' => \&Plugins::Ampache::Browse::getPlaylists,
         'passthrough' => [$ampache], # No function since there is only
@@ -140,14 +152,14 @@ sub feed {
     # 3.5 has tags, 3.4 only genres
     if (int($ampache->{version}) >= 350001) {
       push @items, {
-        'name' => 'Tags',
+        'name' => string('TAGS'),
         'type' => 'opml',
         'url' => \&Plugins::Ampache::Browse::getTags,
         'passthrough' => [$ampache], # No function due to sub-menu
       };
     } else {
       push @items, {
-        'name' => 'Genres',
+        'name' => string('GENRES'),
         'type' => 'opml',
         'url' => \&Plugins::Ampache::Browse::getGenres,
         'passthrough' => [$ampache], # Same as tags
