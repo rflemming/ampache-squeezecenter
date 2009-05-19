@@ -55,7 +55,7 @@ sub getAlbums {
     return $callback->(\@albums);
   } else {
     my $error = string('NO').' '.string('LCALBUMS').' '.string('FOUND');
-    return $callback->(&Ampache::Plugin::Error($error));
+    return $callback->(&Plugins::Ampache::Plugin::Error($error));
   }
 }
 
