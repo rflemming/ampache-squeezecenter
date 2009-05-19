@@ -1,16 +1,29 @@
 package Plugins::Ampache::Browse;
 
+# Copyright 2009 Robert Flemming (flemming@spiralout.net)
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License,
+# version 2.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
 use strict;
 use warnings;
 
-use Plugins::Ampache::Ampache;
 use Slim::Utils::Log;
+use Slim::Utils::Strings qw(string);
+
+use Ampache::Ampache;
 
 use base qw(Slim::Plugin::Base);
 
 my $log = Slim::Utils::Log->addLogCategory({
   'category'     => 'plugin.ampache',
-  'defaultLevel' => 'DEBUG',
+  'defaultLevel' => 'INFO',
 });
 
 # We have one function for each type of object returned.  Since there
@@ -32,7 +45,7 @@ sub getAlbums {
       'image' => $album->{art},
       'passthrough' => [
           $ampache,
-          \&Plugins::Ampache::Ampache::getSongsByAlbum, $album->{id}
+          \&Ampache::getSongsByAlbum, $album->{id}
       ],
     };
   }
@@ -41,7 +54,8 @@ sub getAlbums {
     $log->debug('Found ' . ($#albums + 1) . ' album(s)');
     return $callback->(\@albums);
   } else {
-    return $callback->(&Plugins::Ampache::Plugin::Error('No albums found'));
+    my $error = string('NO').' '.string('LCALBUMS').' '.string('FOUND');
+    return $callback->(&Ampache::Plugin::Error($error));
   }
 }
 
@@ -59,7 +73,7 @@ sub getArtists {
       'url' => \&getAlbums,
       'passthrough' => [
           $ampache,
-          \&Plugins::Ampache::Ampache::getAlbumsByArtist, $artist->{id}
+          \&Ampache::getAlbumsByArtist, $artist->{id}
       ],
     };
   }
@@ -68,7 +82,8 @@ sub getArtists {
     $log->debug('Found ' . ($#artists + 1) . ' artist(s)');
     return $callback->(\@artists);
   } else {
-    return $callback->(&Plugins::Ampache::Plugin::Error('No artists found'));
+    my $error = string('NO').' '.string('LCARTISTS').' '.string('FOUND');
+    return $callback->(&Plugins::Ampache::Plugin::Error($error));
   }
 }
 
@@ -81,36 +96,36 @@ sub getGenres {
 
   foreach my $genre ($ampache->getGenres($filter)) {
     # Since there are multiple ways to browse by Genre return a
-    # sub-menu first.
+    # sub-menu for each Genre.
     push @genres, {
         'title' => $genre->{name},
         'type' => 'opml',
         'items' => [
           {
-            'name' => 'Albums By Genre',
+            'name' => string('ALBUMS'),
             'type' => 'opml',
             'url' => \&getAlbums,
             'passthrough' => [
                 $ampache,
-                \&Plugins::Ampache::Ampache::getAlbumsByGenre, $genre->{id}
+                \&Ampache::getAlbumsByGenre, $genre->{id}
             ],
           },
           {
-            'name' => 'Artists By Genre',
+            'name' => string('ARTISTS'),
             'type' => 'opml',
             'url' => \&getArtists,
             'passthrough' => [
                 $ampache,
-                \&Plugins::Ampache::Ampache::getArtistsByGenre, $genre->{id}
+                \&Ampache::getArtistsByGenre, $genre->{id}
             ],
           },
           {
-            'name' => 'Songs By Genre',
+            'name' => string('SONGS'),
             'type' => 'playlist',
             'url' => \&getSongs,
             'passthrough' => [
                 $ampache,
-                \&Plugins::Ampache::Ampache::getSongsByGenre, $genre->{id}
+                \&Ampache::getSongsByGenre, $genre->{id}
             ],
           },
         ],
@@ -121,7 +136,8 @@ sub getGenres {
     $log->debug('Found ' . ($#genres + 1) . ' genre(s)');
     return $callback->(\@genres);
   } else {
-    return $callback->(&Plugins::Ampache::Plugin::Error('No genres found'));
+    my $error = string('NO').' '.string('LCGENRES').' '.string('FOUND');
+    return $callback->(&Plugins::Ampache::Plugin::Error($error));
   }
 }
 
@@ -139,30 +155,30 @@ sub getTags {
         'type' => 'opml',
         'items' => [
           {
-            'name' => 'Albums By Tag',
+            'name' => string('ALBUMS'),
             'type' => 'opml',
             'url' => \&getAlbums,
             'passthrough' => [
                 $ampache,
-                \&Plugins::Ampache::Ampache::getAlbumsByTag, $tag->{id}
+                \&Ampache::getAlbumsByTag, $tag->{id}
             ],
           },
           {
-            'name' => 'Artists By Tag',
+            'name' => string('ARTISTS'),
             'type' => 'opml',
             'url' => \&getArtists,
             'passthrough' => [
                 $ampache,
-                \&Plugins::Ampache::Ampache::getArtistsByTag, $tag->{id}
+                \&Ampache::getArtistsByTag, $tag->{id}
             ],
           },
           {
-            'name' => 'Songs By Tag',
+            'name' => string('SONGS'),
             'type' => 'playlist',
             'url' => \&getSongs,
             'passthrough' => [
                 $ampache,
-                \&Plugins::Ampache::Ampache::getSongsByTag, $tag->{id}
+                \&Ampache::getSongsByTag, $tag->{id}
             ],
           },
         ],
@@ -173,7 +189,8 @@ sub getTags {
     $log->debug('Found ' . ($#tags + 1) . ' tag(s)');
     return $callback->(\@tags);
   } else {
-    return $callback->(&Plugins::Ampache::Plugin::Error('No tags found'));
+    my $error = string('NO').' '.string('LCTAGS').' '.string('FOUND');
+    return $callback->(&Plugins::Ampache::Plugin::Error($error));
   }
 }
 
@@ -191,7 +208,7 @@ sub getPlaylists {
       'url' => \&getSongs,
       'passthrough' => [
           $ampache,
-          \&Plugins::Ampache::Ampache::getSongsByPlaylist, $playlist->{id}
+          \&Ampache::getSongsByPlaylist, $playlist->{id}
       ],
     };
   }
@@ -200,7 +217,8 @@ sub getPlaylists {
     $log->debug('Found ' . ($#playlists + 1) . ' playlist(s)');
     return $callback->(\@playlists);
   } else {
-    return $callback->(&Plugins::Ampache::Plugin::Error('No playlists found'));
+    my $error = string('NO').' '.string('LCPLAYLISTS').' '.string('FOUND');
+    return $callback->(&Plugins::Ampache::Plugin::Error($error));
   }
 }
 
@@ -225,7 +243,8 @@ sub getSongs {
     $log->debug('Found ' . ($#songs + 1) . ' song(s)');
     return $callback->(\@songs);
   } else {
-    return $callback->(&Plugins::Ampache::Plugin::Error('No songs found'));
+    my $error = string('NO').' '.string('LCSONGS').' '.string('FOUND');
+    return $callback->(&Plugins::Ampache::Plugin::Error($error));
   }
 }
 

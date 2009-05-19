@@ -1,8 +1,21 @@
 package Plugins::Ampache::Settings;
 
+# Copyright 2009 Robert Flemming (flemming@spiralout.net)
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License,
+# version 2.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
 use strict;
-use base qw(Slim::Web::Settings);
+
 use Slim::Utils::Prefs;
+
+use base qw(Slim::Web::Settings);
 
 my $prefs = preferences('plugin.ampache');
 
@@ -37,5 +50,3 @@ sub handler {
 }
 
 1;
-
-__END__

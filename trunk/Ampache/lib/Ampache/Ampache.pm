@@ -1,16 +1,45 @@
-package Plugins::Ampache::Ampache;
+package Ampache;
+
+# Copyright 2009 Robert Flemming (flemming@spiralout.net)
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License,
+# version 2.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# PERL module for interacting with an Ampache server.  You can find more
+# information about the XML API here: http://ampache.org/wiki/dev:xmlapi
+# This module doesn't implement all of the functionality provided by the
+# API, only the amount necessary to support the SqueezeCenter plugin.
+#
+#  $ampache = new Ampache();
+#  $ampache->connect(
+#    'http://www.example.com/server/xml.server.php',
+#    'Pa$$w0rd',
+#    'username',
+#    35001,
+#  );
+#  foreach my $artist ($ampache->getArtists()) {
+#    print "Artist: $artist->{name};
+#  }
 
 use strict;
+use warnings;
+
+use CGI;
 use Digest::MD5 'md5_hex';
 use Digest::SHA 'sha256_hex';
 use LWP::Simple;
 use XML::Simple;
-use Data::Dumper;
 
 # This is defined in the Ampache API
 use constant LIMIT => 5000;
 
-my $debug = 1;
+my $debug = 0;
 
 # Write debugging messages to STDERR
 sub _debug {
@@ -279,7 +308,9 @@ sub getSong {
 sub getSongByURL {
   my $self = shift;
 
-  return ($self->_getResponse('url_to_song', {'url' => shift}))[0];
+  # The url must be encoded so that when it becomes part of the GET
+  # request it can be properly parsed by the server
+  return ($self->_getResponse('url_to_song', {'url' => CGI::escape(shift)}))[0];
 }
 
 sub getSongs {
