@@ -1,19 +1,20 @@
-<?xml version="1.0"?>
+<?xml version='1.0' standalone='yes'?>
 <extension>
-	<name>PLUGIN_AMPACHE</name>
-	<module>Plugins::Ampache::Plugin</module>
-	<playerMenu>MY_MUSIC</playerMenu>
-	<version>1.0</version>
-	<description>PLUGIN_AMPACHE_DESC</description>
-	<creator>Robert Flemming</creator>
-	<email>flemming@spiralout.net</email>
-	<defaultState>enabled</defaultState>
-	<icon>plugins/Ampache/html/images/icon.png</icon>
+  <name>PLUGIN_AMPACHE</name>
+  <creator>Robert Flemming</creator>
+  <defaultState>enabled</defaultState>
+  <description>PLUGIN_AMPACHE_DESC</description>
+  <email>flemming@spiralout.net</email>
+  <icon>plugins/Ampache/html/images/icon.png</icon>
+  <id>0bb96825-eed6-4ced-b09f-e7122772e8bc</id>
+  <module>Plugins::Ampache::Plugin</module>
   <optionsURL>plugins/Ampache/settings/basic.html</optionsURL>
-	<type>2</type>
-	<targetApplication>
-		<id>SqueezeCenter</id>
-		<minVersion>7.3</minVersion>
-		<maxVersion>*</maxVersion>
-	</targetApplication>
+  <playerMenu>MY_MUSIC</playerMenu>
+  <targetApplication>
+    <id>SqueezeCenter</id>
+    <maxVersion>*</maxVersion>
+    <minVersion>7.3</minVersion>
+  </targetApplication>
+  <type>2</type>
+  <version>1.0</version>
 </extension>
