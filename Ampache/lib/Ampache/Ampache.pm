@@ -167,7 +167,7 @@ sub new {
   $self->{url} = undef;
   $self->{key} = undef;
   $self->{user} = undef;
-  $self->{version} = "340001";
+  $self->{version} = 340001;
 
   # By default reconnect after a session times out
   $self->{reconnect} = 1;
@@ -213,9 +213,9 @@ sub connect {
   my $time = time();
 
   my $passphrase;
-  if (int($self->{version}) <= 340001) {
+  if ($self->{version} == 340001) {
     $passphrase = md5_hex($time . $self->{key});
-  } elsif (int($self->{version}) >= 350001) {
+  } elsif ($self->{version} >= 350001) {
     $passphrase = sha256_hex($time . sha256_hex($self->{key}));
   }
 

@@ -87,18 +87,40 @@ sub getArtists {
   }
 }
 
-sub getGenres {
+# Tags and genre are essentially the same for now aside from how they
+# are called.  So we can process both with the same function so long
+# as we use the appropriate function for fetching results from the
+# server
+sub getGenresTags {
   my $client = shift;
   my $callback = shift;
   my ($ampache, $filter) = @_;
 
-  my @genres;
+  my @items;
 
-  foreach my $genre ($ampache->getGenres($filter)) {
-    # Since there are multiple ways to browse by Genre return a
-    # sub-menu for each Genre.
-    push @genres, {
-        'title' => $genre->{name},
+  # Function mappings defining the difference between genres and tags
+  my %funcs;
+  if ($ampache->{version} == 340001) {
+    %funcs = (
+      items   => \&Ampache::getGenres,
+      albums  => \&Ampache::getAlbumsByGenre,
+      artists => \&Ampache::getArtistsByGenre,
+      songs   => \&Ampache::getSongsByGenre,
+    );
+  } elsif ($ampache->{version} >= 350001) {
+    %funcs = (
+      items   => \&Ampache::getTags,
+      albums  => \&Ampache::getAlbumsByTag,
+      artists => \&Ampache::getArtistsByTag,
+      songs   => \&Ampache::getSongsByTag,
+    );
+  }
+
+  my $function = $funcs{items};
+
+  foreach my $item ($ampache->$function($filter)) {
+    push @items, {
+        'title' => $item->{name},
         'type' => 'opml',
         'items' => [
           {
@@ -107,7 +129,7 @@ sub getGenres {
             'url' => \&getAlbums,
             'passthrough' => [
                 $ampache,
-                \&Ampache::getAlbumsByGenre, $genre->{id}
+                $funcs{albums}, $item->{id}
             ],
           },
           {
@@ -116,7 +138,7 @@ sub getGenres {
             'url' => \&getArtists,
             'passthrough' => [
                 $ampache,
-                \&Ampache::getArtistsByGenre, $genre->{id}
+                $funcs{artists}, $item->{id}
             ],
           },
           {
@@ -125,71 +147,19 @@ sub getGenres {
             'url' => \&getSongs,
             'passthrough' => [
                 $ampache,
-                \&Ampache::getSongsByGenre, $genre->{id}
+                $funcs{songs}, $item->{id}
             ],
           },
         ],
     };
   }
 
-  if (@genres) {
-    $log->debug('Found ' . ($#genres + 1) . ' genre(s)');
-    return $callback->(\@genres);
+  if (@items) {
+    $log->debug('Found ' . ($#items + 1) . ' genre/tag(s)');
+    return $callback->(\@items);
   } else {
-    my $error = string('NO').' '.string('LCGENRES').' '.string('FOUND');
-    return $callback->(&Plugins::Ampache::Plugin::Error($error));
-  }
-}
-
-sub getTags {
-  my $client = shift;
-  my $callback = shift;
-  my ($ampache, $filter) = @_;
-
-  my @tags;
-
-  foreach my $tag ($ampache->getTags($filter)) {
-    # Tags work the same was as Genres
-    push @tags, {
-        'title' => $tag->{name},
-        'type' => 'opml',
-        'items' => [
-          {
-            'name' => string('ALBUMS'),
-            'type' => 'opml',
-            'url' => \&getAlbums,
-            'passthrough' => [
-                $ampache,
-                \&Ampache::getAlbumsByTag, $tag->{id}
-            ],
-          },
-          {
-            'name' => string('ARTISTS'),
-            'type' => 'opml',
-            'url' => \&getArtists,
-            'passthrough' => [
-                $ampache,
-                \&Ampache::getArtistsByTag, $tag->{id}
-            ],
-          },
-          {
-            'name' => string('SONGS'),
-            'type' => 'playlist',
-            'url' => \&getSongs,
-            'passthrough' => [
-                $ampache,
-                \&Ampache::getSongsByTag, $tag->{id}
-            ],
-          },
-        ],
-    };
-  }
-
-  if (@tags) {
-    $log->debug('Found ' . ($#tags + 1) . ' tag(s)');
-    return $callback->(\@tags);
-  } else {
-    my $error = string('NO').' '.string('LCTAGS').' '.string('FOUND');
+    my $error = string('NO').' '.string('LCGENRES').'/'.
+        string('LCTAGS').' '.string('FOUND');
     return $callback->(&Plugins::Ampache::Plugin::Error($error));
   }
 }

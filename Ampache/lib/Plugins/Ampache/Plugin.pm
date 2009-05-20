@@ -149,22 +149,19 @@ sub feed {
       },
     );
 
-    # 3.5 has tags, 3.4 only genres
-    if (int($ampache->{version}) >= 350001) {
-      push @items, {
-        'name' => string('TAGS'),
-        'type' => 'opml',
-        'url' => \&Plugins::Ampache::Browse::getTags,
-        'passthrough' => [$ampache], # No function due to sub-menu
-      };
-    } else {
-      push @items, {
-        'name' => string('GENRES'),
-        'type' => 'opml',
-        'url' => \&Plugins::Ampache::Browse::getGenres,
-        'passthrough' => [$ampache], # Same as tags
-      };
+    # 3.4 has genres, 3.5 tags
+    my $name;
+    if ($ampache->{version} == 340001) {
+        $name = string('GENRES');
+    } elsif ($ampache->{version} >= 350001) {
+        $name = string('TAGS');
     }
+    push @items, {
+      'name' => $name,
+      'type' => 'opml',
+      'url' => \&Plugins::Ampache::Browse::getGenresTags,
+      'passthrough' => [$ampache], # No function due to sub-menu
+    };
   }
 
   $log->debug('Items: ' . ($#items + 1));
