@@ -206,7 +206,7 @@ sub connect {
     die "No URL or key specified during connect\n";
   }
 
-  if ($self->{url} !~ m/^http(s)?:\/\/.*\/xml\.server\.php$/) {
+  if ($self->{url} !~ m/^http(s)?:\/\/.*\/server\/xml\.server\.php$/) {
     die "URL does not appear to be valid\n";
   }
 
