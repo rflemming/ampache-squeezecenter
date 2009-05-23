@@ -1,0 +1,77 @@
+[% PROCESS settings/header.html %]
+
+<script language="Javascript">
+  function show(obj) {
+    var el = document.getElementById(obj);
+    el.style.display = '';
+  }
+
+  function hide(obj) {
+    var el = document.getElementById(obj);
+    el.style.display = 'none';
+  }
+  function selectVersion() {
+    var frm = document.forms.settingsForm;
+    var version = frm.plugin_ampache_version.options[frm.plugin_ampache_version.selectedIndex].value;
+    if (version == "3.4") {
+      show("key");
+      hide("password");
+      show("username_optional_desc");
+      hide("username_desc");
+    } else if (version == "3.5") {
+      show("password");
+      hide("key");
+      show("username_desc");
+      hide("username_optional_desc");
+    }
+  }
+</script>
+
+<div class="settingSection">
+  <div class="prefHead">[% "SETUP_PLUGIN_AMPACHE_VERSION" | string | upper %]</div>
+  <div class="prefDesc">[% "SETUP_PLUGIN_AMPACHE_VERSION_DESC" | string %]</div>
+
+  <select name="plugin_ampache_version" onChange="selectVersion()">
+    <option value="3.4" [% IF prefs.plugin_ampache_version == "3.4" %]selected[% END %]>
+      3.4
+    </option>
+    <option value="3.5" [% IF prefs.plugin_ampache_version == "3.5" %]selected[% END %]>
+      3.5
+    </option>
+  </select>
+</div>
+
+<div class="settingSection">
+  <div class="prefHead">[% "SETUP_PLUGIN_AMPACHE_SERVER" | string | upper %]</div>
+  <div class="prefDesc">[% "SETUP_PLUGIN_AMPACHE_SERVER_DESC" | string %]</div>
+
+  <input type="text" class="stdedit" name="plugin_ampache_server" id="plugin_ampache_server" value="[% prefs.plugin_ampache_server %]" size="50">
+</div>
+
+<div class="settingSection">
+  <div class="prefHead">[% "SETUP_PLUGIN_AMPACHE_USERNAME" | string | upper %]</div>
+  <div class="prefDesc" id="username_desc">[% "SETUP_PLUGIN_AMPACHE_USERNAME_DESC" | string %]</div>
+  <div class="prefDesc" id="username_optional_desc">[% "SETUP_PLUGIN_AMPACHE_USERNAME_OPTIONAL_DESC" | string %]</div>
+
+  <input type="text" class="stdedit" name="plugin_ampache_username" id="plugin_ampache_username" value="[% prefs.plugin_ampache_username %]" size="16">
+</div>
+
+<div class="settingSection" id="key">
+  <div class="prefHead">[% "SETUP_PLUGIN_AMPACHE_KEY" | string | upper %]</div>
+  <div class="prefDesc">[% "SETUP_PLUGIN_AMPACHE_KEY_DESC" | string %]</div>
+
+  <input type="text" class="stdedit" name="plugin_ampache_key" id="plugin_ampache_key" value="[% prefs.plugin_ampache_key %]" size="50">
+</div>
+
+<div class="settingSection" id="password">
+  <div class="prefHead">[% "SETUP_PLUGIN_AMPACHE_PASSWORD" | string | upper %]</div>
+  <div class="prefDesc">[% "SETUP_PLUGIN_AMPACHE_PASSWORD_DESC" | string %]</div>
+
+  <input type="password" class="stdedit" name="plugin_ampache_password" id="plugin_ampache_password" value="[% prefs.plugin_ampache_password %]" size="50">
+</div>
+
+<script language="Javascript">
+  selectVersion();
+</script>
+
+[% PROCESS settings/footer.html %]
