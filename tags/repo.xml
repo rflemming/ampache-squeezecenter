@@ -8,7 +8,7 @@
         <plugin name="Ampache" version="1.0" minTarget="7.3" maxTarget="*">
           <title lang="EN">Ampache</title>
           <desc lang="EN">Plugin for accessing music on an Ampache server</desc>
-          <url>http://ampache-squeezecenter.googlecode.com/files/Ampache-1.0.zip</url>
+          <url>http://ampache-squeezecenter.googlecode.com/files/ampache-squeezecenter-1.0.zip</url>
           <creator>Robert Flemming</creator>
           <email>flemming@spiralout.net</email>
           <sha>94eea05bedcf84f6bf81decca1a4539699727c8d</sha>
