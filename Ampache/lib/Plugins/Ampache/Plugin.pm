@@ -73,6 +73,11 @@ sub initPlugin {
 
   Plugins::Ampache::Settings->new;
 
+  # I don't really like logging in as part of initPlugin(), but doing it
+  # in feed() presents a problem for getting remote metadata for
+  # playlist items.
+  $ampache = authenticate();
+
   Slim::Player::ProtocolHandlers->registerIconHandler(
       qr{/play/index\.php\?(.+)},
       sub { return $class->_pluginDataFor('icon'); }
@@ -110,11 +115,6 @@ sub initPlugin {
 
 sub feed {
   my $class = shift;
-
-  # Login if we haven't yet done so
-  if (! $ampache) {
-    $ampache = authenticate();
-  }
 
   my @items;
   # If there was a login error we'll catch it here, otherwise return the
