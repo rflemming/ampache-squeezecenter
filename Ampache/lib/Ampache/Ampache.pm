@@ -32,7 +32,7 @@ use warnings;
 
 use CGI;
 use Digest::MD5 'md5_hex';
-use Digest::SHA 'sha256_hex';
+use Digest::SHA::PurePerl 'sha256_hex';
 use LWP::Simple;
 use XML::Simple;
 
@@ -206,18 +206,25 @@ sub connect {
     die "No URL or key specified during connect\n";
   }
 
-  if ($self->{url} !~ m/^http(s)?:\/\/.*\/server\/xml\.server\.php$/) {
+  if ($self->{url} !~ m#\Ahttps?://.*/server/xml\.server\.php\z#) {
     die "URL does not appear to be valid\n";
   }
 
   my $time = time();
 
-  my $passphrase;
+  # The key is hashed differently in 3.4 and 3.5
+  my $hash_func;
   if ($self->{version} == 340001) {
-    $passphrase = md5_hex($time . $self->{key});
+    $hash_func = \&md5_hex;
   } elsif ($self->{version} >= 350001) {
-    $passphrase = sha256_hex($time . sha256_hex($self->{key}));
+    $hash_func = \&sha256_hex;
+    # This allows the user to use either a plain text key as in 3.4 or
+    # an already hashed key which is only deceptively more secure.
+    if ($self->{key} !~ m#\A[0-9A-Fa-f]{64}\z#) {
+      $self->{key} = sha256_hex($self->{key});
+    }
   }
+  my $passphrase = $hash_func->($time . $self->{key});
 
   _debug("Connecting...");
   _debug("  url=$self->{url}");
