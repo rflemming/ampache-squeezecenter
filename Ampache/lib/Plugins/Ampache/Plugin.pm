@@ -40,7 +40,17 @@ my $ampache;
 # Login to the server, if it fails log a message.  It will also be
 # displayed via feed()
 sub authenticate {
+  my $ampache = Ampache->new();
+
+  # Since version is mandatory we can use that to determine whether or
+  # not the plugin has been configured.
   my $version = $prefs->get('plugin_ampache_version');
+  if (! $version) {
+    $ampache->{error_code} = "400";
+    $ampache->{error} = "Plugin not configured";
+    return $ampache;
+  }
+
   my $key = $prefs->get('plugin_ampache_key');
   if ($version eq "3.4") {
     $version = 340001;
@@ -51,7 +61,6 @@ sub authenticate {
   }
 
   $log->debug('Authenticating...');
-  my $ampache = Ampache->new();
   $ampache->connect(
     $prefs->get('plugin_ampache_server') . '/server/xml.server.php',
     $key,
