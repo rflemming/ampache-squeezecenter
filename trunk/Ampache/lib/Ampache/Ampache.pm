@@ -30,7 +30,7 @@ package Ampache;
 use strict;
 use warnings;
 
-use CGI;
+use URI::Escape;
 use Digest::MD5 'md5_hex';
 use Digest::SHA::PurePerl 'sha256_hex';
 use LWP::Simple;
@@ -317,7 +317,7 @@ sub getSongByURL {
 
   # The url must be encoded so that when it becomes part of the GET
   # request it can be properly parsed by the server
-  return ($self->_getResponse('url_to_song', {'url' => CGI::escape(shift)}))[0];
+  return ($self->_getResponse('url_to_song', {'url' => uri_escape(shift)}))[0];
 }
 
 sub getSongs {
