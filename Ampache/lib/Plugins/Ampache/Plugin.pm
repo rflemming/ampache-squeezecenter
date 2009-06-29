@@ -32,6 +32,7 @@ my $prefs = preferences('plugin.ampache');
 my $log = Slim::Utils::Log->addLogCategory({
   'category'     => 'plugin.ampache',
   'defaultLevel' => 'INFO',
+  'description'  => getDisplayName(),
 });
 
 # Store an Ampache::Ampache instance for easy access
