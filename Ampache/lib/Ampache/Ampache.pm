@@ -30,7 +30,7 @@ package Ampache;
 use strict;
 use warnings;
 
-use URI::Escape;
+use URI::Escape 'uri_escape';
 use Digest::MD5 'md5_hex';
 use Digest::SHA::PurePerl 'sha256_hex';
 use LWP::Simple;
