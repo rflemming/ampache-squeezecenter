@@ -41,38 +41,41 @@ my $ampache;
 # Login to the server, if it fails log a message.  It will also be
 # displayed via feed()
 sub authenticate {
+  my $params = shift;
   my $ampache = Ampache->new();
 
   # Since version is mandatory we can use that to determine whether or
   # not the plugin has been configured.
-  my $version = $prefs->get('plugin_ampache_version');
-  if (! $version) {
-    $ampache->{error_code} = "400";
-    $ampache->{error} = "Plugin not configured";
-    return $ampache;
-  }
+  my $version = $params->{version};
+  if ($version) {
+    my $key = $params->{key};
+    if ($version eq "3.4") {
+      $version = 340001;
+    } elsif ($version eq "3.5") {
+      $version = 350001;
+      # 3.5 uses the user's password rather than a key
+      $key = $params->{password};
+    }
 
-  my $key = $prefs->get('plugin_ampache_key');
-  if ($version eq "3.4") {
-    $version = 340001;
-  } elsif ($version eq "3.5") {
-    $version = 350001;
-    # 3.5 uses the user's password rather than a key
-    $key = $prefs->get('plugin_ampache_password');
-  }
+    $log->debug('Authenticating...');
+    $ampache->connect(
+      $params->{server} . '/server/xml.server.php',
+      $key,
+      $params->{username},
+      $version,
+    );
 
-  $log->debug('Authenticating...');
-  $ampache->connect(
-    $prefs->get('plugin_ampache_server') . '/server/xml.server.php',
-    $key,
-    $prefs->get('plugin_ampache_username'),
-    $version,
-  );
-
-  if ($ampache->{error_code}) {
-    $log->info("Login failed ($ampache->{error_code}): $ampache->{error}");
+    if ($ampache->{auth}) {
+      $log->debug("Logged in with token: $ampache->{auth}");
+    } elsif ($ampache->{error_code}) {
+      $log->info("Login failed ($ampache->{error_code}): $ampache->{error}");
+    } else {
+      $ampache->{error_code} = "400";
+      $ampache->{error} = "Unknown authentication error";
+    }
   } else {
-    $log->debug("Logged in with token: $ampache->{auth}");
+    $ampache->{error_code} = "400";
+    $ampache->{error} = "No servers configured";
   }
 
   return $ampache;
@@ -83,10 +86,10 @@ sub initPlugin {
 
   Plugins::Ampache::Settings->new;
 
-  # I don't really like logging in as part of initPlugin(), but doing it
-  # in feed() presents a problem for getting remote metadata for
-  # playlist items.
-  $ampache = authenticate();
+  # Even though we can theoretically support multiple accounts, we only
+  # use the first one right now
+  my $account = @{$prefs->get('accounts')}[0] || {};
+  $ampache = authenticate($account);
 
   Slim::Player::ProtocolHandlers->registerIconHandler(
       qr{/play/index\.php\?(.+)},
