@@ -21,10 +21,7 @@ use Ampache::Ampache;
 
 use base qw(Slim::Plugin::Base);
 
-my $log = Slim::Utils::Log->addLogCategory({
-  'category'     => 'plugin.ampache',
-  'defaultLevel' => 'INFO',
-});
+my $log   = logger('plugin.ampache');
 
 # We have one function for each type of object returned.  Since there
 # are multiple ways to get an Artist, Album, or Song reference the
@@ -51,7 +48,9 @@ sub getAlbums {
   }
 
   if (@albums) {
-    $log->debug('Found ' . ($#albums + 1) . ' album(s)');
+    if ($log->is_debug) {
+      $log->debug('Found ' . ($#albums + 1) . ' album(s)');
+    }
     return $callback->(\@albums);
   } else {
     my $error = string('NO').' '.string('LCALBUMS').' '.string('FOUND');
@@ -79,7 +78,9 @@ sub getArtists {
   }
 
   if (@artists) {
-    $log->debug('Found ' . ($#artists + 1) . ' artist(s)');
+    if ($log->is_debug) {
+      $log->debug('Found ' . ($#artists + 1) . ' artist(s)');
+    }
     return $callback->(\@artists);
   } else {
     my $error = string('NO').' '.string('LCARTISTS').' '.string('FOUND');
@@ -155,7 +156,9 @@ sub getGenresTags {
   }
 
   if (@items) {
-    $log->debug('Found ' . ($#items + 1) . ' genre/tag(s)');
+    if ($log->is_debug) {
+      $log->debug('Found ' . ($#items + 1) . ' genre/tag(s)');
+    }
     return $callback->(\@items);
   } else {
     my $error = string('NO').' '.string('LCGENRES').'/'.
@@ -184,7 +187,9 @@ sub getPlaylists {
   }
 
   if (@playlists) {
-    $log->debug('Found ' . ($#playlists + 1) . ' playlist(s)');
+    if ($log->is_debug) {
+      $log->debug('Found ' . ($#playlists + 1) . ' playlist(s)');
+    }
     return $callback->(\@playlists);
   } else {
     my $error = string('NO').' '.string('LCPLAYLISTS').' '.string('FOUND');
@@ -210,7 +215,9 @@ sub getSongs {
   }
 
   if (@songs) {
-    $log->debug('Found ' . ($#songs + 1) . ' song(s)');
+    if ($log->is_debug) {
+      $log->debug('Found ' . ($#songs + 1) . ' song(s)');
+    }
     return $callback->(\@songs);
   } else {
     my $error = string('NO').' '.string('LCSONGS').' '.string('FOUND');

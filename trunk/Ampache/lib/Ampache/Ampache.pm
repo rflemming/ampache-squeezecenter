@@ -206,7 +206,7 @@ sub connect {
     die "No URL or key specified during connect\n";
   }
 
-  if ($self->{url} !~ m#\Ahttps?://.*/server/xml\.server\.php\z#) {
+  if ($self->{url} !~ m#\Ahttps?://.+/server/xml\.server\.php\z#) {
     die "URL does not appear to be valid\n";
   }
 
