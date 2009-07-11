@@ -26,8 +26,8 @@ $prefs->migrate(1, sub {
   push my @accounts, {
     'version' => $prefs->get('plugin_ampache_version'),
     'server' => $prefs->get('plugin_ampache_server'),
-    'username' => $prefs->get( 'plugin_ampache_username') || '',
-    'password' => $prefs->get( 'plugin_ampache_password') || '',
+    'username' => $prefs->get('plugin_ampache_username') || '',
+    'password' => $prefs->get('plugin_ampache_password') || '',
     'key' => $prefs->get('plugin_ampache_key') || '',
   };
 
