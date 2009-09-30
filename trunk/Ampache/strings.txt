@@ -2,7 +2,7 @@ PLUGIN_AMPACHE
 	EN	Ampache
 
 PLUGIN_AMPACHE_DESC
-	EN	Connected to a remote Ampache server
+	EN	Connect to a remote Ampache server
 
 SETUP_PLUGIN_AMPACHE_SERVER
 	EN	Ampache Server
