@@ -1103,13 +1103,13 @@ sub getLogin {  #Set up Async HTTP request
 	#$url = $url . '?activity=login&type=subscriber&loginForm=subscriber&stream=undefined&token=' . $token . '&playerType=full&username='.$username.'&password=' . getPassword() . '&rememberMe=no'; 
 	$url = $url . '?activity=login&type=subscriber&loginForm=subscriber&stream=undefined&token=' . $token . '&username='.$username.'&password=' . getPassword() . '&rememberMe=no&captchaID=' . $captchaID . '&captcha_response='. $captchaANS . '&playerType=full'; 
 
+	$log->info($url);
+
 	my $http = Slim::Networking::SimpleAsyncHTTP->new(\&gotLogin,
 							  \&gotErrorViaHTTP,
 							  {caller => 'getLogin',
 							   client => $client,
 							   channelRef => $channelRef});
-	$log->info($url);
-
 	my %headers = (
 		"Cookie" => $cookie,
 		"User-Agent" => 'Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.1) Gecko/20061204 Firefox/2.0.0.1'
@@ -1262,7 +1262,7 @@ sub gotHashKey {
 			$hashkey= $1;
 			$log->info("Hash Key: $hashkey");
 		}
-		elsif (/SRC="(.*)"/) {
+		elsif (/PARAM NAME="FileName" VALUE="(.*)"/) {
 			$link = $1;
 			$log->info("Link: $link");
 		}
@@ -1391,10 +1391,10 @@ sub gotURL {
 	$log->info("Playing Stream: $channels[1][$channelRef]:" . $nowPlaying{$client});
 	
 	if ($action eq 'callback') {
-		$song->{'streamUrl'} = $nowPlaying{$client};
+		$song->streamUrl($nowPlaying{$client});
 
 		# Include the metadata sub-stream for this station
-		$song->{'wmaMetadataStream'} = 2;
+		$song->wmaMetadataStream(2);
 				
 		$log->debug('******ABOUT TO DO A CALLBACK****');
 		$callback->();
@@ -1451,12 +1451,8 @@ sub gotCategories {
 	my @ary=split /\n/,$content; #break large string into array
 
 	for (@ary) { #Could probably speed this up a tat if necessary...
-		if (/myPlayer.Category\('(.*)','\/sirius\/mediaplayer.*>(.*)</) { #USA
-			push(@CDgetGenre1,$2);
-			push(@CDgetGenre2,$1);
+		if (/myPlayer.Category\('(.*)','\/sirius(?:\/ca)?\/mediaplayer.*>(.*)</) {
 			$log->info("Found Category: $1 - $2");
-		}
-		elsif (/myPlayer.Category\('(.*)','\/sirius\/ca\/mediaplayer.*>(.*)</) { #Canada
 			push(@CDgetGenre1,$2);
 			push(@CDgetGenre2,$1);
 		}
@@ -1517,16 +1513,8 @@ sub gotGenres {
 	my @ary=split /\n/,$content; #break large string into array
   
 	for (@ary) {
-		if (/myPlayer.Genre\('.*', '(.*)','\/sirius\/mediaplayer.*>(.*)</) {
+		if (/myPlayer.Genre\('.*', '(.*)','\/sirius(?:\/ca)?\/mediaplayer.*>(.*)</) {
 			$log->info("Found Channel: " . $2 . '-' . $1);
-			#Add genre to arrays to retrieve stations one at a time
-			push(@CDcategoryName, $categoryName);
-			push(@CDcategoryRef, $categoryRef);
-			push(@CDgenreName, $2);
-			push(@CDgenreRef, $1);
-		}
-		elsif (/myPlayer.Genre\('.*', '(.*)','\/sirius\/ca\/mediaplayer.*>(.*)</) { #Canada
-			#$::d_plugins && msg("SiriusRadio: Genre:" . $2 . '-' . $1 . "\n");			
 			#Add genre to arrays to retrieve stations one at a time
 			push(@CDcategoryName, $categoryName);
 			push(@CDcategoryRef, $categoryRef);
@@ -1730,7 +1718,7 @@ sub gotErrorViaHTTP {
 	my $caller = $params->{'caller'};
 	my $client = $params->{'client'};
 		
-	$log->info("Error getting" . $http->url() . " Caller:$caller" . " Error:" . $http->error());
+	$log->info("Error getting " . $http->url() . " Caller:$caller" . " Error:" . $http->error());
 
 	#Add message to display to indicate error
 	#gotError($params->{'client'}, $http->url(), $http->error());
@@ -2264,7 +2252,7 @@ sub getTitle() {
 		$url = 'http://itson.siriusbackstage.com:8999/itson/streams.php';
 	}
 	else {
-		$url = 'http://dogstardata.org/tracker/squeezebox.txt';
+		$url = 'http://www.dogstarradio.com/dogstardata.txt';
 	}
 	
 	my $http = Slim::Networking::SimpleAsyncHTTP->new(\&gotTitle,
@@ -2433,7 +2421,7 @@ sub webPages {
 
 	Slim::Web::Pages->addPageLinks('radios', { 'PLUGIN_SIRIUSRADIO' => 'plugins/SiriusRadio/index.html' });
 	Slim::Web::Pages->addPageLinks('icons', { 'PLUGIN_SIRIUSRADIO' => 'plugins/SiriusRadio/html/images/sirius5.png' });
-	Slim::Web::HTTP::addPageFunction("plugins/SiriusRadio/index.html", \&Plugins::SiriusRadio::Plugin::handleIndex);
+	Slim::Web::Pages->addPageFunction("plugins/SiriusRadio/index.html", \&Plugins::SiriusRadio::Plugin::handleIndex);
 
 	return (\%pages, undef);
 }

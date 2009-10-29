@@ -40,7 +40,7 @@ sub new {
 	my $class = shift;
 	my $args  = shift;
 
-	my $url    = $args->{'song'}->{'streamUrl'};
+	my $url    = $args->{'song'}->streamUrl();
 	
 	return unless $url;
 	
@@ -103,7 +103,7 @@ sub parseMetadata {
 sub canDirectStreamSong {
 	my ( $class, $client, $song ) = @_;
 	
-	return $class->SUPER::canDirectStream($client, $song->{'streamUrl'}, $class->getFormatForURL());
+	return $class->SUPER::canDirectStream($client, $song->streamUrl(), $class->getFormatForURL());
 }
 
 sub parseDirectHeaders {
