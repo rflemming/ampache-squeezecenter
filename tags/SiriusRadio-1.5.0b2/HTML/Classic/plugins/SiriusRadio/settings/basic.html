@@ -1,0 +1,64 @@
+[% PROCESS settings/header.html %]
+
+	<div class="settingSection">
+		<div class="prefHead">[% "SETUP_PLUGIN_SIRIUSRADIO_USERNAME" | string | upper %]</div>
+		<div class="prefDesc">[% "SETUP_PLUGIN_SIRIUSRADIO_USERNAME_DESC" | string %]</div>
+
+		<input type="text" class="stdedit" name="plugin_siriusradio_username" id="plugin_siriusradio_username" value="[% prefs.plugin_siriusradio_username %]" size="30">
+	</div>
+
+	<div class="settingSection">
+		<div class="prefHead">[% "SETUP_PLUGIN_SIRIUSRADIO_PASSWORD" | string | upper %]</div>
+		<div class="prefDesc">[% "SETUP_PLUGIN_SIRIUSRADIO_PASSWORD_DESC" | string %]</div>
+
+		<input type="password" class="stdedit" name="plugin_siriusradio_password" id="plugin_siriusradio_password" value="[% prefs.plugin_siriusradio_password %]" size="30">
+	</div>
+
+	<div class="settingSection">
+		<div class="prefHead">[% "SETUP_PLUGIN_SIRIUSRADIO_LOCATION" | string | upper %]</div>
+		<div class="prefDesc">[% "SETUP_PLUGIN_SIRIUSRADIO_LOCATION_DESC" | string %]</div>
+
+		<select name="plugin_siriusradio_location">
+			<option value="0" [% IF prefs.plugin_siriusradio_location == "0" %]selected[% END %]>USA
+			</option>
+			<option value="1" [% IF prefs.plugin_siriusradio_location == "1" %]selected[% END %]>Canada
+			</option>
+		</select>
+	</div>
+
+	<div class="settingSection">
+		<div class="prefHead">[% "SETUP_PLUGIN_SIRIUSRADIO_BITRATE" | string | upper %]</div>
+		<div class="prefDesc">[% "SETUP_PLUGIN_SIRIUSRADIO_BITRATE_DESC" | string %]</div>
+
+		<select name="plugin_siriusradio_bitrate">
+			<option value="0" [% IF prefs.plugin_siriusradio_bitrate == "0" %]selected[% END %]>Low
+			</option>
+			<option value="1" [% IF prefs.plugin_siriusradio_bitrate == "1" %]selected[% END %]>High
+			</option>
+		</select>
+	</div>
+
+	<div class="settingSection">
+		<div class="prefHead">[% "SETUP_PLUGIN_SIRIUSRADIO_TITLESOURCE" | string | upper %]</div>
+		<div class="prefDesc">[% "SETUP_PLUGIN_SIRIUSRADIO_TITLESOURCE_DESC" | string %]</div>
+
+		<select name="plugin_siriusradio_titlesource">
+			<option value="0" [% IF prefs.plugin_siriusradio_titlesource == "0" %]selected[% END %]>itsonsirius.net</option>
+			<option value="1" [% IF prefs.plugin_siriusradio_titlesource == "1" %]selected[% END %]>itson.siriusbackstage.com</option>
+			<option value="2" [% IF prefs.plugin_siriusradio_titlesource == "2" %]selected[% END %]>dogstarradio.com</option>
+		</select>
+	</div>
+
+	<div class="settingSection">
+		<div class="prefHead">[% "SETUP_PLUGIN_SIRIUSRADIO_PRESETS" | string | upper %]</div>
+		<div class="prefDesc">[% "SETUP_PLUGIN_SIRIUSRADIO_PRESETS_DESC" | string %]</div>
+
+		<input type="hidden" name="plugin_siriusradio_presets" value="">
+		[% FOREACH preset = prefs.plugin_siriusradio_presets %]
+			<input type="text" class="stdedit" name="plugin_siriusradio_presets" id="plugin_siriusradio_presets" value="[% preset %]" size="3"><BR>
+		[% END %]
+		<input type="text" class="stdedit" name="plugin_siriusradio_presets" id="plugin_siriusradio_presets" %]" size="3">
+	</div>
+
+
+[% PROCESS settings/footer.html %]
