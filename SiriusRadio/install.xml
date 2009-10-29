@@ -4,7 +4,7 @@
         <name>PLUGIN_SIRIUSRADIO</name>
         <module>Plugins::SiriusRadio::Plugin</module>
         <playerMenu>RADIO</playerMenu>
-        <version>1.5.0b1</version>
+        <version>1.5.0b2</version>
         <description>SETUP_GROUP_PLUGIN_SIRIUSRADIO_DESC</description>
         <creator>Greg Brown</creator>
 	<defaultState>enabled</defaultState>
@@ -15,7 +15,7 @@
 
         <targetApplication>
   	        <id>SlimServer</id>
-                <minVersion>7.3</minVersion>
-                <maxVersion>7.4+</maxVersion>
+                <minVersion>7.4</minVersion>
+                <maxVersion>*</maxVersion>
         </targetApplication>
 </extension>
