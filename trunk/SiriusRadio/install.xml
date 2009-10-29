@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<extension>
+	<id>088B34B4-D947-11DB-8314-0800200C9A66</id>
+        <name>PLUGIN_SIRIUSRADIO</name>
+        <module>Plugins::SiriusRadio::Plugin</module>
+        <playerMenu>RADIO</playerMenu>
+        <version>1.5.0b1</version>
+        <description>SETUP_GROUP_PLUGIN_SIRIUSRADIO_DESC</description>
+        <creator>Greg Brown</creator>
+	<defaultState>enabled</defaultState>
+   <homepageURL>http://www.gregbrown.net</homepageURL>
+   <icon>plugins/SiriusRadio/html/images/sirius5.png</icon>
+	<optionsURL>plugins/SiriusRadio/settings/basic.html</optionsURL>   
+	<type>2</type><!-- type=extension -->
+
+        <targetApplication>
+  	        <id>SlimServer</id>
+                <minVersion>7.3</minVersion>
+                <maxVersion>7.4+</maxVersion>
+        </targetApplication>
+</extension>

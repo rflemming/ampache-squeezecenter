@@ -1,0 +1,85 @@
+# String file for SiriusRadio plugin
+
+PLUGIN_SIRIUSRADIO
+	EN	Sirius Radio
+
+SETUP_GROUP_PLUGIN_SIRIUSRADIO
+	EN	Sirius Radio Online
+
+SETUP_GROUP_PLUGIN_SIRIUSRADIO_DESC
+	EN	Browse and tune Sirius radio online streams.
+	
+SETUP_PLUGIN_SIRIUSRADIO_USERNAME
+	EN	Sirius User Name
+
+SETUP_PLUGIN_SIRIUSRADIO_USERNAME_DESC
+	EN	Your Sirius Radio online user name.
+
+SETUP_PLUGIN_SIRIUSRADIO_PASSWORD
+	EN	Sirius Password
+	
+SETUP_PLUGIN_SIRIUSRADIO_PASSWORD_DESC
+	EN	Your Sirius Radio online password.  Once saved it will be diplayed as blank.
+
+SETUP_PLUGIN_SIRIUSRADIO_PASSWORD_CHANGED
+	DE	Dein Sirius Passwort wurde geändert
+	EN	Your Sirius password has been changed
+	ES	La contraseña para Sirius ha sido cambiada
+	NL	Je Sirius wachtwoord is gewijzigd
+
+SETUP_PLUGIN_SIRIUSRADIO_LOCATION_DESC
+	EN	The plugin is compatible with Sirius USA and Sirius Canada.  Please choose the location for which you have an account with.
+
+SETUP_PLUGIN_SIRIUSRADIO_LOCATION
+	EN	Sirius Location
+
+SETUP_PLUGIN_SIRIUSRADIO_LOCATION_CHOOSE
+	EN	Location:
+
+SETUP_PLUGIN_SIRIUSRADIO_TITLESOURCE_DESC
+	EN	You have the choice as to which web site the plug-in uses for song title information.  Some are more reliable than others.
+
+SETUP_PLUGIN_SIRIUSRADIO_TITLESOURCE
+	EN	Song Title Source
+
+SETUP_PLUGIN_SIRIUSRADIO_TITLESOURCE_CHOOSE
+	EN	Title source:
+
+SETUP_PLUGIN_SIRIUSRADIO_BITRATE_DESC
+	EN	Depending on your subscription level, Sirius streams are available in low and high bitrates.<BR><B>Note:</B> Choosing a bitrate which you are not authorized for will have unexpected results, do so at your own risk.  You may need to restart your server and/or exit the Sirius Plugin for changes to take effect.
+
+SETUP_PLUGIN_SIRIUSRADIO_BITRATE
+	EN	Stream Bitrate
+
+SETUP_PLUGIN_SIRIUSRADIO_BITRATE_CHOOSE
+	EN	Bitrate:
+
+SETUP_PLUGIN_SIRIUSRADIO_PRESETS
+	EN	Sirius User Presets
+
+SETUP_PLUGIN_SIRIUSRADIO_PRESETS_DESC
+	EN	You have the option to create Sirus Radio presets to quickly access your favorite channels.  Enter a single channel number on each line in your preferred order.
+
+PLUGIN_SIRIUSRADIO_MYPRESETS
+	EN	My Presets
+
+PLUGIN_SIRIUSRADIO_BROWSEGENRES
+	EN	Browse Genres
+
+PLUGIN_SIRIUSRADIO_BROWSEEXTENDED
+	EN	Browse Extended View
+
+PLUGIN_SIRIUSRADIO_BROWSENAMES
+	EN	Browse Channel Names	
+
+PLUGIN_SIRIUSRADIO_BROWSEPLAYING
+	EN	Browse Now Playing
+
+PLUGIN_SIRIUSRADIO_REFRESH
+	EN	Refresh
+
+PLUGIN_SIRIUSRADIO_BROWSENUMBERS
+	EN	Browse Channel Numbers
+
+PLUGIN_SIRIUSRADIO_BROWSEREFRESH
+	EN	Auto Refresh View
