@@ -49,6 +49,11 @@ sub _debug {
   }
 }
 
+sub debug {
+  my $self = shift;
+  $debug = shift;
+}
+
 # Send a query to the server using the supplied action and hash of
 # parameters, parse the resulting XML and return an array of hashes.
 sub _getResponse {
