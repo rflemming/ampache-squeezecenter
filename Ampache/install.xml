@@ -9,12 +9,12 @@
   <id>0bb96825-eed6-4ced-b09f-e7122772e8bc</id>
   <module>Plugins::Ampache::Plugin</module>
   <optionsURL>plugins/Ampache/settings/basic.html</optionsURL>
-  <playerMenu>MY_MUSIC</playerMenu>
+  <playerMenu>RADIO</playerMenu>
   <targetApplication>
     <id>SqueezeCenter</id>
     <maxVersion>*</maxVersion>
     <minVersion>7.3</minVersion>
   </targetApplication>
   <type>2</type>
-  <version>1.3</version>
+  <version>1.4</version>
 </extension>

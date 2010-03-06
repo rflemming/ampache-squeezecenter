@@ -43,6 +43,8 @@ my $ampache;
 sub authenticate {
   my $params = shift;
   my $ampache = Ampache->new();
+  # Turn on module level debugging if plugin debugging is enabled
+  $ampache->debug($log->is_debug);
 
   # Since version is mandatory we can use that to determine whether or
   # not the plugin has been configured.
@@ -98,7 +100,7 @@ sub initPlugin {
 
   $class->SUPER::initPlugin(
       tag            => 'ampache',
-      menu           => 'music_services',
+      menu           => 'radios',
       weight         => 50,
   );
 
@@ -114,14 +116,14 @@ sub initPlugin {
     };
 
     Slim::Buttons::Home::addSubMenu(
-        'MY_MUSIC',
+        'RADIO',
         'PLUGIN_AMPACHE',
         $menu,
     );
 
     $class->initCLI(
-        tag  => 'ampache_my_music',
-        menu => 'my_music',
+        tag  => 'ampache_radio',
+        menu => 'radios',
     );
   }
 }
@@ -213,7 +215,7 @@ sub getDisplayName {
 }
 
 sub playerMenu () {
-  return 'MUSIC_SERVICES';
+  return 'RADIO';
 }
 
 sub metaProvider {
